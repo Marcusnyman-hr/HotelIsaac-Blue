@@ -22,6 +22,7 @@ namespace HotelIsaac.Models
         [Column("ID")]
         public long Id { get; set; }
         [Column("CUSTOMERTYPESID")]
+        [Display(Name = "Membership")]
         public short Customertypesid { get; set; }
         [Required]
         [Column("FIRSTNAME")]
@@ -49,6 +50,7 @@ namespace HotelIsaac.Models
         public string Country { get; set; }
         [Column("ICE")]
         [StringLength(60)]
+        [Display(Name = "In Case of Emergency")]
         public string Ice { get; set; }
         [Column("LASTUPDATED", TypeName = "datetime")]
         public DateTime? Lastupdated { get; set; }
