@@ -1,4 +1,6 @@
 using HotelIsaac.Data;
+using HotelIsaac.Models.Roles;
+using HotelIsaac.Models.Roles.BaseRole;
 using HotelIsaac.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +40,24 @@ namespace HotelIsaac
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+            services.AddIdentityCore<CleanerUser>()
+                .AddRoles<CleanerRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                //.AddDefaultTokenProviders()
+                .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<CleanerUser, CleanerRole>>()
+                .AddDefaultUI();
+
+            services.AddIdentityCore<AdminUser>()
+                .AddRoles<AdminRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                //.AddDefaultTokenProviders()
+                .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<AdminUser, AdminRole>>()
+                .AddDefaultUI();
+
+            //services.AddRazorPages();
+
             services.AddControllersWithViews();
             services.AddTransient<ISeederService, SeederService>();
             services.AddTransient<ICustomerService, CustomerService>();

@@ -1,6 +1,8 @@
 using HotelIsaac.Data;
+using HotelIsaac.Models.Roles.BaseRole;
 using HotelIsaac.Services;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +26,7 @@ namespace HotelIsaac
 
             using (var scope = host.Services.CreateScope())
             {
+            //    var services = scope.ServiceProvider;
                 HotelContext hotelContext = scope.ServiceProvider.GetService<HotelContext>();
                 ISeederService seederService = scope.ServiceProvider.GetService<ISeederService>();
                 //If database doesent exist, run the seeder from movieservice
@@ -32,6 +35,9 @@ namespace HotelIsaac
                 {
                     seederService.SeedDataBase();
                 };
+                //var userManager = services.GetRequiredService<UserManager<AdminUser>>();
+                //var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                //await ContextSeed.SeedRolesAsync(userManager, roleManager);
             }
             host.Run();
         }
