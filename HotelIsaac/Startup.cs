@@ -40,6 +40,8 @@ namespace HotelIsaac
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddTransient<ISeederService, SeederService>();
+            services.AddTransient<ICustomerService, CustomerService>();
+            services.AddTransient<IBookingService, BookingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

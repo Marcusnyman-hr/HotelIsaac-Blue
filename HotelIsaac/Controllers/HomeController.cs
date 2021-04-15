@@ -1,4 +1,5 @@
 ﻿using HotelIsaac.Models;
+using HotelIsaac.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,10 +13,14 @@ namespace HotelIsaac.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ICustomerService _customerService;
+        private readonly IBookingService _bookingService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ICustomerService customerService, IBookingService bookingService)
         {
             _logger = logger;
+            _customerService = customerService;
+            _bookingService = bookingService;
         }
 
         public IActionResult Index()
