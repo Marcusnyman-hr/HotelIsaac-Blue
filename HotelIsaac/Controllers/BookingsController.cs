@@ -162,5 +162,40 @@ namespace HotelIsaac.Controllers
         {
             return _context.Bookings.Any(e => e.Id == id);
         }
+
+
+
+        /// <summary>
+        /// Denko tries booking
+        /// </summary>
+        /// <returns></returns>
+        // GET: Bookings/Create
+        public IActionResult CreateDenk()
+        {
+            ViewData["Customersid"] = new SelectList(_context.Customers, "Id", "City");
+            ViewData["Staffid"] = new SelectList(_context.staff, "Id", "Email");
+            //List<Room> RoomList = _context.Rooms.ToList();
+            ViewBag.Room = null;
+            return View();
+        }
+
+        public IActionResult checkAvailableRooms(string button)
+        {
+            if (button == "first")
+            {
+                List<Room> RoomList = _context.Rooms.ToList();
+                var ledigaRum = RoomList.Select(x => x.Roomtypesid = 1);
+                ViewBag.Rooms = RoomList;
+                TempData["buttonval"] = "First button is clicked";
+
+            }
+
+            if (button == "second")
+            {
+                TempData["buttonval"] = "Second button is clicked";
+
+            }
+            return RedirectToAction("CreateDenk");
+        }
     }
 }

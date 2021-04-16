@@ -1,0 +1,54 @@
+﻿@model HotelIsaac.Models.Booking
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1 style="color: white;">Booking Denk</h1>
+
+<hr />
+<div class="row" style="color: white;">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @*ANTAL PERSONER*@
+            <div class="form-group">
+                <label asp-for="Qtypersons" class="control-label"></label>
+                <input asp-for="Qtypersons" class="form-control" />
+                <span asp-validation-for="Qtypersons" class="text-danger"></span>
+            </div>
+            @*START OCH SLUTDATUM*@
+            <div class="form-group">
+                <label asp-for="Startdate" class="control-label"></label>
+                <input asp-for="Startdate" class="form-control" />
+                <span asp-validation-for="Startdate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Enddate" class="control-label"></label>
+                <input asp-for="Enddate" class="form-control" />
+                <span asp-validation-for="Enddate" class="text-danger"></span>
+            </div>
+            <form>
+                <button name="button" value="first" asp-action="checkAvailableRooms">First</button>
+                <button name="button" value="second" asp-action="checkAvailableRooms">Second</button>
+            </form>
+        </form>
+        <div>
+            @TempData["buttonval"]
+
+            @if (ViewBag.Rooms != null)
+            {
+                foreach (var item in ViewBag.Rooms)
+                {
+                     <p>item.Roomnum</p>
+                }
+            }
+        </div>
+
+
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
