@@ -38,25 +38,19 @@ namespace HotelIsaac
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<ApplicationUser, IdentityRole>>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
 
-            services.AddIdentityCore<CleanerUser>()
-                .AddRoles<CleanerRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                //.AddDefaultTokenProviders()
-                .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<CleanerUser, CleanerRole>>()
-                .AddDefaultUI();
-
-            services.AddIdentityCore<AdminUser>()
-                .AddRoles<AdminRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                //.AddDefaultTokenProviders()
-                .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<AdminUser, AdminRole>>()
-                .AddDefaultUI();
+            //services.AddIdentityCore<ApplicationUser>()
+            //    .AddRoles<IdentityRole>()
+            //    .AddEntityFrameworkStores<ApplicationDbContext>()
+            //    //.AddDefaultTokenProviders()
+            //    .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<ApplicationUser, IdentityRole>>()
+            //    .AddDefaultUI();
 
             //services.AddRazorPages();
 

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HotelIsaac.Data;
 using HotelIsaac.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelIsaac.Controllers
 {
@@ -20,6 +21,7 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Payments
+        [Authorize(Roles = "Basic-Staff")]
         public async Task<IActionResult> Index()
         {
             var hotelContext = _context.Payments.Include(p => p.Customers);
@@ -27,6 +29,7 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Payments/Details/5
+        [Authorize(Roles = "Basic-Staff")]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -46,6 +49,7 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Payments/Create
+        [Authorize(Roles = "Basic-Staff")]
         public IActionResult Create()
         {
             ViewData["Customersid"] = new SelectList(_context.Customers, "Id", "City");
@@ -57,6 +61,7 @@ namespace HotelIsaac.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Basic-Staff")]
         public async Task<IActionResult> Create([Bind("Id,Customersid,Totalcost,Transactiontoken,Bookingsid,DiscountSek")] Payment payment)
         {
             if (ModelState.IsValid)
@@ -70,6 +75,7 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Payments/Edit/5
+        [Authorize(Roles = "Basic-Staff")]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -91,6 +97,7 @@ namespace HotelIsaac.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Basic-Staff")]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Customersid,Totalcost,Transactiontoken,Bookingsid,DiscountSek")] Payment payment)
         {
             if (id != payment.Id)
@@ -123,6 +130,7 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Payments/Delete/5
+        [Authorize(Roles = "Basic-Staff")]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -144,6 +152,7 @@ namespace HotelIsaac.Controllers
         // POST: Payments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Basic-Staff")]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var payment = await _context.Payments.FindAsync(id);
