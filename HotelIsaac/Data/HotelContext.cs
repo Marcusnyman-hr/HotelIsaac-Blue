@@ -1,5 +1,6 @@
 ﻿using System;
 using HotelIsaac.Models;
+using HotelIsaac.Models.Roles.BaseRole;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
