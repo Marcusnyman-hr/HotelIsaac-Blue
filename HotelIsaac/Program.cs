@@ -36,9 +36,9 @@ namespace HotelIsaac
                 {
                     seederService.SeedDataBase();
                 };
-                var userManager = services.GetRequiredService<UserManager<AdminUser>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                await ContextSeed.SeedRolesAsync(userManager, roleManager);
+                //var userManager = services.GetRequiredService<UserManager<AdminUser>>();
+                //var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                //await ContextSeed.SeedRolesAsync(userManager, roleManager);
             }
             host.Run();
         }
