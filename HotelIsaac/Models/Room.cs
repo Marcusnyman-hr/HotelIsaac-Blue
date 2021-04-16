@@ -20,8 +20,10 @@ namespace HotelIsaac.Models
         [Column("ID")]
         public short Id { get; set; }
         [Column("ROOMNUM")]
+        [Display(Name = "Room Number")]
         public short Roomnum { get; set; }
         [Column("ROOMTYPESID")]
+        [Display(Name = "Room Type")]
         public short Roomtypesid { get; set; }
 
         [ForeignKey(nameof(Roomtypesid))]
