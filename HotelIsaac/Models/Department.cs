@@ -21,6 +21,7 @@ namespace HotelIsaac.Models
         public short Id { get; set; }
         [Required]
         [Column("DEPNAME")]
+        [Display(Name = "Department")]
         [StringLength(40)]
         public string Depname { get; set; }
 

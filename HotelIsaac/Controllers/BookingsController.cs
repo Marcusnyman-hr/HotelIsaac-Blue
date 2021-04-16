@@ -20,10 +20,111 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Bookings
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var hotelContext = _context.Bookings.Include(b => b.Customers).Include(b => b.Staff);
-            return View(await hotelContext.ToListAsync());
+            ViewData["QtySortParm"] = sortOrder == "Qtypersons" ? "qtypersons_desc" : "Qtypersons";
+            ViewData["StartdateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "startdate_desc" : "";
+            ViewData["EnddateSortParm"] = sortOrder == "Enddate" ? "enddate_desc" : "Enddate";
+            ViewData["EtaSortParm"] = sortOrder == "Eta" ? "eta_desc" : "Eta";
+            ViewData["TimearrivalSortParm"] = sortOrder == "Timearrival" ? "timearrival_desc" : "Timearrival";
+            ViewData["TimedepartureSortParm"] = sortOrder == "Timedeparture" ? "timedeparture_desc" : "Timedeparture";
+            ViewData["SpecialneedsSortParm"] = sortOrder == "Specialneeds" ? "specialneeds_desc" : "Specialneeds";
+            ViewData["ExtrabedSortParm"] = sortOrder == "Extrabed" ? "extrabed_desc" : "Extrabed";
+            ViewData["CustomersSortParm"] = sortOrder == "Customers" ? "customers_desc" : "Customers";
+            ViewData["StaffSortParm"] = sortOrder == "Staff" ? "staff_desc" : "Staff";
+
+            var bookings = from s in _context.Bookings
+                           .Include(c => c.Customers)
+                           .Include(s => s.Bookingsrooms)
+                           select s;
+
+            switch (sortOrder)
+            {
+                case "Qtypersons":
+                    bookings = bookings.OrderBy(c => c.Qtypersons);
+                    break;
+
+                case "qtypersons_desc":
+                    bookings = bookings.OrderByDescending(c => c.Qtypersons);
+                    break;
+
+                case "startdate_desc":
+                    bookings = bookings.OrderByDescending(c => c.Startdate);
+                    break;
+
+                case "Enddate":
+                    bookings = bookings.OrderBy(c => c.Enddate);
+                    break;
+
+                case "enddate_desc":
+                    bookings = bookings.OrderByDescending(c => c.Enddate);
+                    break;
+
+                case "Eta":
+                    bookings = bookings.OrderBy(c => c.Eta);
+                    break;
+
+                case "eta_desc":
+                    bookings = bookings.OrderByDescending(c => c.Eta);
+                    break;
+
+                case "Timearrival":
+                    bookings = bookings.OrderBy(c => c.Timearrival);
+                    break;
+
+                case "timearrival_desc":
+                    bookings = bookings.OrderByDescending(c => c.Timearrival);
+                    break;
+
+                case "Timedeparture":
+                    bookings = bookings.OrderBy(c => c.Timedeparture);
+                    break;
+
+                case "timedeparture_desc":
+                    bookings = bookings.OrderByDescending(c => c.Timedeparture);
+                    break;
+
+                case "Specialneeds":
+                    bookings = bookings.OrderBy(c => c.Specialneeds);
+                    break;
+
+                case "specialneeds_desc":
+                    bookings = bookings.OrderByDescending(c => c.Specialneeds);
+                    break;
+
+                case "Extrabed":
+                    bookings = bookings.OrderBy(c => c.Extrabed);
+                    break;
+
+                case "extrabed_desc":
+                    bookings = bookings.OrderByDescending(c => c.Extrabed);
+                    break;
+
+                case "Customers":
+                    bookings = bookings.OrderBy(c => c.Customers);
+                    break;
+
+                case "customers_desc":
+                    bookings = bookings.OrderByDescending(c => c.Customers);
+                    break;
+
+                case "Staff":
+                    bookings = bookings.OrderBy(c => c.Staff);
+                    break;
+
+                case "staff_desc":
+                    bookings = bookings.OrderByDescending(c => c.Staff);
+                    break;
+
+                default:
+                    bookings = bookings.OrderBy(c => c.Startdate);
+                    break;
+
+            }
+
+
+            return View(await bookings.AsNoTracking().ToListAsync());
+
         }
 
         // GET: Bookings/Details/5

@@ -20,8 +20,10 @@ namespace HotelIsaac.Models
         [Column("ID")]
         public short Id { get; set; }
         [Column("ROOMNUM")]
+        [Display(Name = "Room Number")]
         public short Roomnum { get; set; }
         [Column("ROOMTYPESID")]
+        [Display(Name = "Room Type")]
         public short Roomtypesid { get; set; }
 
         [ForeignKey(nameof(Roomtypesid))]
@@ -29,5 +31,9 @@ namespace HotelIsaac.Models
         public virtual Roomtype Roomtypes { get; set; }
         [InverseProperty(nameof(Bookingsroom.Rooms))]
         public virtual ICollection<Bookingsroom> Bookingsrooms { get; set; }
+        public bool? Cleaned { get; set; }
+        [Display(Name = "Last Cleaned")]
+        public DateTime? LastCleaned { get; set; }
+
     }
 }

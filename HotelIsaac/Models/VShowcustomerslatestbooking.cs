@@ -14,6 +14,7 @@ namespace HotelIsaac.Models
         [Column("CUSTOMERSID")]
         public long Customersid { get; set; }
         [Column("LATEST VISIT", TypeName = "date")]
+        [Display(Name = "Latest Visit")]
         public DateTime? LatestVisit { get; set; }
     }
 }

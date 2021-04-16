@@ -13,9 +13,11 @@ namespace HotelIsaac.Models
     {
         [Key]
         [Column("BOOKINGSID")]
+        [Display(Name = "Booking number")]
         public long Bookingsid { get; set; }
         [Key]
         [Column("ROOMSID")]
+        [Display(Name = "Room number")]
         public short Roomsid { get; set; }
 
         [ForeignKey(nameof(Bookingsid))]

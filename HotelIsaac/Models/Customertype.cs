@@ -23,6 +23,7 @@ namespace HotelIsaac.Models
         [StringLength(30)]
         public string Typename { get; set; }
         [Column("DISCOUNT(%)", TypeName = "decimal(18, 0)")]
+        [Display(Name = "Discount")]
         public decimal? Discount { get; set; }
 
         [InverseProperty(nameof(Customer.Customertypes))]
