@@ -22,6 +22,16 @@
                 <select asp-for="Roomtypesid" class ="form-control" asp-items="ViewBag.Roomtypesid"></select>
             </div>
             <div class="form-group">
+                <label asp-for="Cleaned" class="control-label"></label>
+                <input asp-for="Cleaned" class="form-control" />
+                <span asp-validation-for="Cleaned" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastCleaned" class="control-label"></label>
+                <input asp-for="LastCleaned" class="form-control" />
+                <span asp-validation-for="LastCleaned" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>

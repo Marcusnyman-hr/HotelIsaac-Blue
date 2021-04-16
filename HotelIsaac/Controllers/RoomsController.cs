@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HotelIsaac.Data;
 using HotelIsaac.Models;
+using HotelIsaac.Services;
 
 namespace HotelIsaac.Controllers
 {
     public class RoomsController : Controller
     {
         private readonly HotelContext _context;
+        private readonly IRoomService _roomService;
 
-        public RoomsController(HotelContext context)
+        public RoomsController(HotelContext context, IRoomService roomService)
         {
             _context = context;
+            _roomService = roomService;
         }
 
         // GET: Rooms
@@ -25,6 +28,30 @@ namespace HotelIsaac.Controllers
             var hotelContext = _context.Rooms.Include(r => r.Roomtypes);
             return View(await hotelContext.ToListAsync());
         }
+
+        // GET: Rooms to clean
+        public async Task<IActionResult> Cleaning()
+        {
+            var roomsToClean = _roomService.GetRoomsToClean();
+            return View(roomsToClean);
+        }
+        //[HttpPost, ActionName("Clean")]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Clean(short? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            int res = await _roomService.SetRoomToClean(id);
+            if (res == 0)
+            {
+                return NotFound();
+            }
+            return RedirectToAction(nameof(Cleaning));
+        }
+
+
 
         // GET: Rooms/Details/5
         public async Task<IActionResult> Details(short? id)
@@ -57,7 +84,7 @@ namespace HotelIsaac.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Roomnum,Roomtypesid")] Room room)
+        public async Task<IActionResult> Create([Bind("Id,Roomnum,Roomtypesid,Cleaned,LastCleaned")] Room room)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +118,7 @@ namespace HotelIsaac.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(short id, [Bind("Id,Roomnum,Roomtypesid")] Room room)
+        public async Task<IActionResult> Edit(short id, [Bind("Id,Roomnum,Roomtypesid,Cleaned,LastCleaned")] Room room)
         {
             if (id != room.Id)
             {

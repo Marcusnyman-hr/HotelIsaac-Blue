@@ -29,5 +29,9 @@ namespace HotelIsaac.Models
         public virtual Roomtype Roomtypes { get; set; }
         [InverseProperty(nameof(Bookingsroom.Rooms))]
         public virtual ICollection<Bookingsroom> Bookingsrooms { get; set; }
+        public bool? Cleaned { get; set; }
+        [Display(Name = "Last Cleaned")]
+        public DateTime? LastCleaned { get; set; }
+
     }
 }
