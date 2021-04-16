@@ -29,8 +29,7 @@
                 <span asp-validation-for="Enddate" class="text-danger"></span>
             </div>
             <form>
-                <button name="button" value="first" asp-action="checkAvailableRooms">First</button>
-                <button name="button" value="second" asp-action="checkAvailableRooms">Second</button>
+                <button name="button" value="first" asp-action="checkAvailableRooms">Show available rooms</button>
             </form>
         </form>
         <div>
@@ -38,14 +37,12 @@
 
             @if (ViewBag.Rooms != null)
             {
-                foreach (var item in ViewBag.Rooms)
+               @foreach (var item in ViewBag.Rooms)
                 {
-                     <p>item.Roomnum</p>
+                  @item.Roomnum
                 }
             }
         </div>
-
-
     </div>
 </div>
 

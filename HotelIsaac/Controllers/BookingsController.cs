@@ -172,10 +172,8 @@ namespace HotelIsaac.Controllers
         // GET: Bookings/Create
         public IActionResult CreateDenk()
         {
-            ViewData["Customersid"] = new SelectList(_context.Customers, "Id", "City");
-            ViewData["Staffid"] = new SelectList(_context.staff, "Id", "Email");
-            //List<Room> RoomList = _context.Rooms.ToList();
-            ViewBag.Room = null;
+            //ViewData["Customersid"] = new SelectList(_context.Customers, "Id", "City");
+            //ViewData["Staffid"] = new SelectList(_context.staff, "Id", "Email");
             return View();
         }
 
@@ -186,15 +184,10 @@ namespace HotelIsaac.Controllers
                 List<Room> RoomList = _context.Rooms.ToList();
                 var ledigaRum = RoomList.Select(x => x.Roomtypesid = 1);
                 ViewBag.Rooms = RoomList;
-                TempData["buttonval"] = "First button is clicked";
+                TempData["buttonval"] = "Button is clicked";
 
             }
 
-            if (button == "second")
-            {
-                TempData["buttonval"] = "Second button is clicked";
-
-            }
             return RedirectToAction("CreateDenk");
         }
     }
