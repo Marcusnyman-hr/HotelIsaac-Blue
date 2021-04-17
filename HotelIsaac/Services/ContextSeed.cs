@@ -49,6 +49,73 @@ namespace HotelIsaac.Services
                 }
 
             }
+
+            var Cleaner = new ApplicationUser
+            {
+                UserName = "Cleas",
+                Email = "cleaner@gmail.com",
+                FirstName = "Cleas",
+                LastName = "E",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true
+            };
+            if (userManager.Users.All(u => u.Id != Cleaner.Id))
+            {
+                var user = await userManager.FindByEmailAsync(Cleaner.Email);
+                if (user == null)
+                {
+                    const string Password = "Cleaner!123";
+                    await userManager.CreateAsync(Cleaner, Password);
+                    await userManager.AddToRoleAsync(Cleaner, "Cleaner-Staff");
+                    await userManager.UpdateAsync(Cleaner);
+
+                }
+
+            }
+
+            var HeadChef = new ApplicationUser
+            {
+                UserName = "Denis",
+                Email = "headchef@gmail.com",
+                FirstName = "Denis",
+                LastName = "V",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true
+            };
+            if (userManager.Users.All(u => u.Id != HeadChef.Id))
+            {
+                var user = await userManager.FindByEmailAsync(HeadChef.Email);
+                if (user == null)
+                {
+                    const string Password = "HeadChef!123";
+                    await userManager.CreateAsync(HeadChef, Password);
+                    await userManager.AddToRoleAsync(HeadChef, "Restaurant-Staff");
+                    await userManager.UpdateAsync(HeadChef);
+
+                }
+
+            }
+
+            var Receptionist = new ApplicationUser
+            {
+                UserName = "Asa",
+                Email = "receptionist@gmail.com",
+                FirstName = "ASa",
+                LastName = "S",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true
+            };
+            if (userManager.Users.All(u => u.Id != Receptionist.Id))
+            {
+                var user = await userManager.FindByEmailAsync(Receptionist.Email);
+                if (user == null)
+                {
+                    const string Password = "Receptionist!123";
+                    await userManager.CreateAsync(Receptionist, Password);
+                    await userManager.AddToRoleAsync(Receptionist, "Reception-Staff");
+                    await userManager.UpdateAsync(Receptionist);
+                }
+            }
         }
     }
 }
