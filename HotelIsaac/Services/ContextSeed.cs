@@ -18,6 +18,7 @@ namespace HotelIsaac.Services
             await roleManager.CreateAsync(new IdentityRole("Reception-Staff"));
             await roleManager.CreateAsync(new IdentityRole("Restaurant-Staff"));
             await roleManager.CreateAsync(new IdentityRole("Basic-Staff"));
+            await roleManager.CreateAsync(new IdentityRole("Customer"));
         }
 
         public static async Task SeedAdminAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
