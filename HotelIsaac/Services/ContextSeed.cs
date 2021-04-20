@@ -1,4 +1,5 @@
-﻿using HotelIsaac.Models.Roles;
+﻿using HotelIsaac.Models;
+using HotelIsaac.Models.Roles;
 using HotelIsaac.Models.Roles.BaseRole;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -40,13 +41,8 @@ namespace HotelIsaac.Services
                 {
                     const string Password = "Admin!123";
                     await userManager.CreateAsync(Admin, Password);
-                    //await userManager.AddToRoleAsync(Admin, "Basic-Staff");
-                    //await userManager.AddToRoleAsync(Admin, "Restaurant-Staff");
-                    //await userManager.AddToRoleAsync(Admin, "Reception-Staff");
-                    //await userManager.AddToRoleAsync(Admin, "Cleaner-Staff");
                     await userManager.AddToRoleAsync(Admin, "Administrator");
                     await userManager.UpdateAsync(Admin);
-
                 }
 
             }
@@ -69,9 +65,7 @@ namespace HotelIsaac.Services
                     await userManager.CreateAsync(Cleaner, Password);
                     await userManager.AddToRoleAsync(Cleaner, "Cleaner-Staff");
                     await userManager.UpdateAsync(Cleaner);
-
                 }
-
             }
 
             var HeadChef = new ApplicationUser
@@ -101,7 +95,7 @@ namespace HotelIsaac.Services
             {
                 UserName = "Asa",
                 Email = "receptionist@gmail.com",
-                FirstName = "ASa",
+                FirstName = "Asa",
                 LastName = "S",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
@@ -113,6 +107,7 @@ namespace HotelIsaac.Services
                 {
                     const string Password = "Receptionist!123";
                     await userManager.CreateAsync(Receptionist, Password);
+                    await userManager.AddToRoleAsync(Receptionist, "Basic-Staff");
                     await userManager.AddToRoleAsync(Receptionist, "Reception-Staff");
                     await userManager.UpdateAsync(Receptionist);
                 }
