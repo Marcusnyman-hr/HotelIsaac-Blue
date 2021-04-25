@@ -14,6 +14,13 @@ namespace HotelIsaac.Services
         {
             _db = db;
         }
+
+        public int GetAmountOfRooms(int roomTypeId)
+        {
+            int amountOfRooms = _db.Rooms.Where(r => r.Roomtypesid == roomTypeId).Count();
+            return amountOfRooms;
+        }
+
         public List<Room> GetRoomsToClean()
         {
             var roomsToClean = _db.Rooms.Where(r => r.Cleaned == false).ToList();

@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HotelIsaac.Data;
 using HotelIsaac.Models;
+using Microsoft.AspNetCore.Identity;
+using HotelIsaac.Models.Roles.BaseRole;
 
 namespace HotelIsaac.Controllers
 {
     public class CustomersController : Controller
     {
         private readonly HotelContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CustomersController(HotelContext context)
+        public CustomersController(HotelContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Customers
@@ -48,7 +52,6 @@ namespace HotelIsaac.Controllers
         // GET: Customers/Create
         public IActionResult Create()
         {
-            ViewData["Customertypesid"] = new SelectList(_context.Customertypes, "Id", "Id");
             return View();
         }
 
@@ -57,16 +60,39 @@ namespace HotelIsaac.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Customertypesid,Firstname,Lastname,Email,Streetadress,City,Country,Ice,Lastupdated")] Customer customer)
+        public async Task<IActionResult> Create([Bind("Firstname,Lastname,Email,Password, Streetadress,City,Country,Ice")] NewCustomerViewModel newCustomer)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(customer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var user = new Models.Roles.BaseRole.ApplicationUser();
+                user.Email = newCustomer.Email;
+                user.UserName = newCustomer.Firstname;
+                user.FirstName = newCustomer.Firstname;
+                user.LastName = newCustomer.Lastname;
+                user.EmailConfirmed = true;
+                IdentityResult checkUser = await _userManager.CreateAsync(user, newCustomer.Password);
+                if(checkUser.Succeeded)
+                {
+                    var result = await _userManager.AddToRoleAsync(user, "Customer");
+                    var customer = new Customer()
+                    {
+                        Customertypesid = 1,
+                        Firstname = newCustomer.Firstname,
+                        Lastname = newCustomer.Lastname,
+                        Email = newCustomer.Email,
+                        Streetadress = newCustomer.Streetadress,
+                        City = newCustomer.City,
+                        Country = newCustomer.Country,
+                        Ice = newCustomer.Ice,
+                        Lastupdated = DateTime.Now
+                    };
+                    _context.Customers.Add(customer);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(newCustomer);
             }
-            ViewData["Customertypesid"] = new SelectList(_context.Customertypes, "Id", "Id", customer.Customertypesid);
-            return View(customer);
+            return View(newCustomer);
         }
 
         // GET: Customers/Edit/5
