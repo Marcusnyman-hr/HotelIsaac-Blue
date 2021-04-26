@@ -133,6 +133,14 @@ namespace HotelIsaac.Services
             return datesAndBookedRooms;
         }
 
+        public List<Booking> GetBookingsByCustomerId(long customerId)
+        {
+            List<Booking> customersBookings = _db.Bookings
+                .Where(b => b.Customersid == customerId)
+                .ToList();
+            return customersBookings;
+        }
+
         public int InsertBooking(int customerId, int qtyPersons, DateTime startDate, DateTime endDate, DateTime ETA, DateTime timeArrival, string specialNeeds, bool extraBed, int staffId, int roomId )
         {
             int rowsAffected;

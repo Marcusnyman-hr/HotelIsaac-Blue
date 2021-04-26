@@ -10,5 +10,6 @@ namespace HotelIsaac.Services
     {
         public int InsertBooking(int customerId, int qtyPersons, DateTime startDate, DateTime endDate, DateTime ETA, DateTime timeArrival, string specialNeeds, bool extraBed, int staffId, int roomId);
         public List<BookedRoomsPerDay> GetBookedDates();
+        public List<Booking> GetBookingsByCustomerId(long customerId);
     }
 }

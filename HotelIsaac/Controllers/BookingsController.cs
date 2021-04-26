@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using HotelIsaac.Models.Roles.BaseRole;
 using System.Security.Claims;
 using HotelIsaac.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelIsaac.Controllers
 {
@@ -20,13 +21,15 @@ namespace HotelIsaac.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IBookingService _bookingService;
         private readonly IRoomService _roomService;
+        private readonly ICustomerService _customerService;
 
-        public BookingsController(HotelContext context, UserManager<ApplicationUser> userManager, IBookingService bookingService, IRoomService roomService)
+        public BookingsController(HotelContext context, UserManager<ApplicationUser> userManager, IBookingService bookingService, IRoomService roomService, ICustomerService customerService)
         {
             _context = context;
             _userManager = userManager;
             _bookingService = bookingService;
             _roomService = roomService;
+            _customerService = customerService;
         }
 
         // GET: Bookings
@@ -187,6 +190,7 @@ namespace HotelIsaac.Controllers
             return View(booking);
         }
         //Get Bookings/Book
+        //[Authorize(Roles = "Administrator, Cleaner-Staff, Reception-Staff, Customer")]
         public IActionResult Book()
         {
 
@@ -212,23 +216,35 @@ namespace HotelIsaac.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator, Cleaner-Staff, Reception-Staff, Customer")]
         public async Task<IActionResult> Book([Bind("Customersid, RoomTypeId, Eta, Qtypersons,Startdate,Enddate,Specialneeds,Extrabed")] BookingVM booking)
         {
             if (ModelState.IsValid)
             {
-                var newBooking = new Booking()
+                var freeRoomId = _roomService.GetIdOfFreeRoomOfType(booking.RoomTypeId, booking.Startdate, booking.Enddate);
+                if (freeRoomId != 0)
                 {
-                    Customersid = booking.Customersid,
-                    Qtypersons = booking.Qtypersons,
-                    Startdate = booking.Startdate,
-                    Enddate = booking.Enddate,
-                    Eta = booking.Eta,
-                    Specialneeds = booking.Specialneeds,
-                    Extrabed = booking.Extrabed
-                };
-                _context.Add(newBooking);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(BookingSuccess));
+                    var newBooking = new Booking()
+                    {
+                        Customersid = booking.Customersid,
+                        Qtypersons = booking.Qtypersons,
+                        Startdate = booking.Startdate,
+                        Enddate = booking.Enddate,
+                        Eta = booking.Eta,
+                        Specialneeds = booking.Specialneeds,
+                        Extrabed = booking.Extrabed
+                    };
+                    _context.Bookings.Add(newBooking);
+                    await _context.SaveChangesAsync();
+                    var bookingsroom = new Bookingsroom()
+                    {
+                        Bookingsid = newBooking.Id,
+                        Roomsid = freeRoomId
+                    };
+                    _context.Bookingsrooms.Add(bookingsroom);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(BookingSuccess));
+                }
             }
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             if (userEmail != null)
@@ -251,6 +267,21 @@ namespace HotelIsaac.Controllers
         public IActionResult BookingSuccess()
         {
             return View();
+        }
+        public IActionResult CustomersBookings()
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (userEmail == null)
+            {
+                return NotFound();
+            }
+            long customerId = _customerService.CheckIfCustomerExists(userEmail);
+            if (customerId == 0)
+            {
+                return NotFound();
+            }
+            var customersBookings = _bookingService.GetBookingsByCustomerId(customerId);
+            return View(customersBookings);
         }
 
         // GET: Bookings/Create

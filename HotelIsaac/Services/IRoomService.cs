@@ -11,6 +11,7 @@ namespace HotelIsaac.Services
         public List<Room> GetRoomsToClean();
         public Task<int> SetRoomToClean(short? id);
         public int GetAmountOfRooms(int roomTypeId);
+        public short GetIdOfFreeRoomOfType(int roomTypeId, DateTime startDate, DateTime endDate);
 
     }
 }

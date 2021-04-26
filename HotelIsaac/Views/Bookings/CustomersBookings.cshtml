@@ -1,0 +1,58 @@
+﻿@model IEnumerable<HotelIsaac.Models.Booking>
+
+@{
+    ViewData["Title"] = "Your Bookings";
+}
+
+<h1>Your bookings: </h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Qtypersons)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Startdate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Enddate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Eta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Specialneeds)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Extrabed)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+      <tr>
+        <td>
+          @Html.DisplayFor(modelItem => item.Qtypersons)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.Startdate)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.Enddate)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.Eta)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.Specialneeds)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.Extrabed)
+        </td>
+
+
+      </tr>
+}
+    </tbody>
+</table>
