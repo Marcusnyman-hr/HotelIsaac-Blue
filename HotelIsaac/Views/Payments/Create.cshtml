@@ -18,7 +18,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Totalcost" class="control-label"></label>
-                <input asp-for="Totalcost" class="form-control" />
+                <input asp-for="Totalcost" class="form-control" min="0" max="50000" />
                 <span asp-validation-for="Totalcost" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -33,7 +33,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DiscountSek" class="control-label"></label>
-                <input asp-for="DiscountSek" class="form-control" />
+                <input asp-for="DiscountSek" class="form-control" min="0" max="10000"/>
                 <span asp-validation-for="DiscountSek" class="text-danger"></span>
             </div>
             <div class="form-group">

@@ -16,17 +16,24 @@ namespace HotelIsaac.Models
         public long Id { get; set; }
         [Column("CUSTOMERSID")]
         public long Customersid { get; set; }
+
+        [Range(1, 50000)]
+        [DataType(DataType.Currency)]
         [Column("TOTALCOST", TypeName = "money")]
         [Display(Name = "Total Cost")]
         public decimal? Totalcost { get; set; }
+
         [Required]
         [Column("TRANSACTIONTOKEN")]
-
         [StringLength(50)]
         public string Transactiontoken { get; set; }
+
         [Column("BOOKINGSID")]
         [Display(Name = "Booking Number")]
         public long? Bookingsid { get; set; }
+
+        [Range(1, 10000)]
+        [DataType(DataType.Currency)]
         [Column("DISCOUNT(SEK)")]
         [Display(Name = "Discount")]
         public int? DiscountSek { get; set; }

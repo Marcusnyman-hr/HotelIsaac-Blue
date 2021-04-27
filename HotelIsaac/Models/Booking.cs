@@ -22,7 +22,8 @@ namespace HotelIsaac.Models
         public long Id { get; set; }
         [Column("CUSTOMERSID")]
         public long Customersid { get; set; }
-
+         
+        [Range(1, 5)]
         [Column("QTYPERSONS")]
         [Display(Name = "How many people")]
         public short Qtypersons { get; set; }

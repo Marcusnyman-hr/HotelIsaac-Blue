@@ -9,75 +9,75 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table table-borderless">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Firstname)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["FirstNameSortParm"]" title="Sort first name">First Name</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Lastname)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["LastNameSortParm"]" title="Sort last name">Last Name</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["EmailSortParm"]" title="Sort email">Email</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Streetadress)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["AdressSortParm"]" title="Sort adress">Adress</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.City)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CitySortParm"]" title="Sort city">City</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Country)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CountrySortParm"]" title="Sort country">Country</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Ice)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ICESortParm"]" title="Sort ice">ICE</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Lastupdated)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["LastUpdatedSortParm"]" title="Sort last updated">Last Updated</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Customertypes)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CustomerTypeSortParm"]" title="Sort customer type">Customer Type</a>
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Firstname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Lastname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Streetadress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Country)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Lastupdated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Customertypes.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Firstname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lastname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Streetadress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Country)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lastupdated)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customertypes.Id)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
