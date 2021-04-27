@@ -1,5 +1,6 @@
 ﻿using HotelIsaac.Data;
 using HotelIsaac.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,29 @@ namespace HotelIsaac.Services
         {
             _db = db;
         }
+
+        public int GetAmountOfRooms(int roomTypeId)
+        {
+            int amountOfRooms = _db.Rooms.Where(r => r.Roomtypesid == roomTypeId).Count();
+            return amountOfRooms;
+        }
+
+        public short GetIdOfFreeRoomOfType(int roomTypeId, DateTime startDate, DateTime endDate)
+        {
+            var room = _db.Rooms
+                .Include(r => r.Bookingsrooms)
+                .ThenInclude(br => br.Bookings)
+                .Where(r => r.Roomtypesid == roomTypeId && r.Bookingsrooms.All(br => !(br.Bookings.Startdate < endDate && startDate < br.Bookings.Enddate)))
+                .First();
+            if (room != null)
+            {
+                return room.Id;
+            } else
+            {
+                return 0;
+            }
+        }
+
         public List<Room> GetRoomsToClean()
         {
             var roomsToClean = _db.Rooms.Where(r => r.Cleaned == false).ToList();

@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "moment.js@2.29.1",
+      "destination": "wwwroot/lib/moment.js/"
+    },
+    {
+      "library": "bootstrap-daterangepicker@3.0.5",
+      "destination": "wwwroot/lib/bootstrap-daterangepicker/"
+    },
+    {
+      "library": "jquery-timepicker@1.13.18",
+      "destination": "wwwroot/lib/jquery-timepicker/"
+    },
+    {
+      "library": "bootstrap-timepicker@0.5.2",
+      "destination": "wwwroot/lib/bootstrap-timepicker/"
+    }
+  ]
+}

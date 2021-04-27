@@ -1,8 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using HotelIsaac.Models.Roles.BaseRole
 
-@inject SignInManager<CleanerUser> SignInManager
-@inject UserManager<CleanerUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
@@ -18,11 +18,11 @@
     }
     else
     {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        </li>
+<li class="nav-item">
+  <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Create">Register</a>
+</li>
+      <li class="nav-item">
+          <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+      </li>
     }
 </ul>

@@ -1,11 +1,19 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - HotelIsaac</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - HotelIsaac</title>
+  <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="~/lib/bootstrap-daterangepicker/daterangepicker.css" />
+  @*<link rel="stylesheet" href="~/lib/jquery-timepicker/jquery.timepicker.css" />*@
+  <link rel="stylesheet" href="~/lib/bootstrap-timepicker/css/bootstrap-timepicker.min.css" />
+  <link rel="stylesheet" href="~/css/site.css" />
+  <script src="~/lib/jquery/dist/jquery.min.js"></script>
+  <script src="~/lib/moment.js/moment.min.js"></script>
+  <script src="~/lib/bootstrap-daterangepicker/daterangepicker.min.js"></script>
+  @*<script src="~/lib/jquery-timepicker/jquery.timepicker.min.js"></script>*@
+  <script src="~/lib/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
 </head>
 <body>
     <header>
@@ -18,33 +26,60 @@
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
               <ul class="navbar-nav flex-grow-1">
-                <li class="nav-item">
-                  <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Index">Customers</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-dark" asp-area="" asp-controller="Bookings" asp-action="Index">Bookings</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-dark" asp-area="" asp-controller="Staff" asp-action="Index">Staff</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-dark" asp-area="" asp-controller="Departments" asp-action="Index">Departments</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-dark" asp-area="" asp-controller="Rooms" asp-action="Index">Rooms</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-dark" asp-area="" asp-controller="Reviews" asp-action="Index">Reviews</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-dark" asp-area="" asp-controller="Payments" asp-action="Index">Payments</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-dark" asp-area="" asp-controller="Rooms" asp-action="Cleaning">Rooms To Clean</a>
-                </li>
+                @if (User.IsInRole("Customer") || !User.Identity.IsAuthenticated)
+                {
+                  <li>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Bookings" asp-action="Book">Book a room</a>
+                  </li>
+                }
+                @if (User.IsInRole("Administrator"))
+                {
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Staff" asp-action="Index">Staff</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Payments" asp-action="Index">Payments</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Index">Customers</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Departments" asp-action="Index">Departments</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Bookings" asp-action="Index">Bookings</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Rooms" asp-action="Index">Rooms</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Reviews" asp-action="Index">Reviews</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Rooms" asp-action="Cleaning">Rooms To Clean</a>
+                  </li>
+                }
+                @if (User.IsInRole("Reception-Staff"))
+                {
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Bookings" asp-action="Index">Bookings</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Rooms" asp-action="Index">Rooms</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Reviews" asp-action="Index">Reviews</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Rooms" asp-action="Cleaning">Rooms To Clean</a>
+                  </li>
+                }
+                @if (User.IsInRole("Cleaner-Staff"))
+                {
+                  <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Rooms" asp-action="Cleaning">Rooms To Clean</a>
+                  </li>
+                }
               </ul>
               <partial name="_LoginPartial" />
             </div>
@@ -62,7 +97,7 @@
             &copy; 2021 - HotelIsaac - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>*@
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
