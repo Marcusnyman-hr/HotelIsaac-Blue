@@ -28,6 +28,7 @@ namespace HotelIsaac
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+                var UserContext = services.GetRequiredService<ApplicationDbContext>();
                 HotelContext hotelContext = scope.ServiceProvider.GetService<HotelContext>();
                 ISeederService seederService = scope.ServiceProvider.GetService<ISeederService>();
                 //If database doesent exist, run the seeder from movieservice
@@ -36,9 +37,13 @@ namespace HotelIsaac
                 {
                     seederService.SeedDataBase();
                 };
-                //var userManager = services.GetRequiredService<UserManager<AdminUser>>();
-                //var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                //await ContextSeed.SeedRolesAsync(userManager, roleManager);
+                if (!UserContext.Database.EnsureCreated())
+                {
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    await ContextSeed.SeedRolesAsync(userManager, roleManager);
+                    await ContextSeed.SeedAdminAsync(userManager, roleManager);
+                }
             }
             host.Run();
         }

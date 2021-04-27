@@ -7,116 +7,31 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HotelIsaac.Data;
 using HotelIsaac.Models;
+using Microsoft.AspNetCore.Identity;
+using HotelIsaac.Models.Roles.BaseRole;
 
 namespace HotelIsaac.Controllers
 {
     public class CustomersController : Controller
     {
         private readonly HotelContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CustomersController(HotelContext context)
+        public CustomersController(HotelContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index()
         {
-            ViewData["LastNameSortParm"] = sortOrder == "Lastname" ? "lastname_desc" : "Lastname";
-            ViewData["FirstNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "firstname_desc" : "";
-            ViewData["EmailSortParm"] = sortOrder == "Email" ? "email_desc" : "Email";
-            ViewData["AdressSortParm"] = sortOrder == "Adress" ? "adress_desc" : "Adress";
-            ViewData["CitySortParm"] = sortOrder == "City" ? "city_desc" : "City";
-            ViewData["CountrySortParm"] = sortOrder == "Country" ? "country_desc" : "Country";
-            ViewData["ICESortParm"] = sortOrder == "Ice" ? "ice_desc" : "Ice";
-            ViewData["LastUpdatedSortParm"] = sortOrder == "Lastupdated" ? "lastupdated_desc" : "Lastupdated";
-            ViewData["CustomerTypeSortParm"] = sortOrder == "Customertype" ? "customertype_desc" : "Customertype";
-
-            var customers = from c in _context.Customers
-                           .Include(c => c.Bookings)
-                           select c;
-
-            switch (sortOrder)
-            {
-                case "Lastname":
-                    customers = customers.OrderBy(c => c.Lastname);
-                    break;
-
-                case "lastname_desc":
-                    customers = customers.OrderByDescending(c => c.Lastname);
-                    break;
-
-                case "firstname_desc":
-                    customers = customers.OrderByDescending(c => c.Firstname);
-                    break;
-
-                case "Email":
-                    customers = customers.OrderBy(c => c.Email);
-                    break;
-
-                case "email_desc":
-                    customers = customers.OrderByDescending(c => c.Email);
-                    break;
-
-                case "Adress":
-                    customers = customers.OrderBy(c => c.Streetadress);
-                    break;
-
-                case "adress_desc":
-                    customers = customers.OrderByDescending(c => c.Streetadress);
-                    break;
-
-                case "City":
-                    customers = customers.OrderBy(c => c.City);
-                    break;
-
-                case "city_desc":
-                    customers = customers.OrderByDescending(c => c.City);
-                    break;
-
-                case "Country":
-                    customers = customers.OrderBy(c => c.Country);
-                    break;
-
-                case "country_desc":
-                    customers = customers.OrderByDescending(c => c.Country);
-                    break;
-
-                case "Ice":
-                    customers = customers.OrderBy(c => c.Ice);
-                    break;
-
-                case "ice_desc":
-                    customers = customers.OrderByDescending(c => c.Ice);
-                    break;
-
-                case "Lastupdated":
-                    customers = customers.OrderBy(c => c.Lastupdated);
-                    break;
-
-                case "lastupdated_desc":
-                    customers = customers.OrderByDescending(c => c.Lastupdated);
-                    break;
-
-                case "Customertype":
-                    customers = customers.OrderBy(c => c.Customertypes);
-                    break;
-
-                case "customertype_desc":
-                    customers = customers.OrderByDescending(c => c.Customertypes);
-                    break;
-
-                default:
-                    customers = customers.OrderBy(c => c.Firstname);
-                    break;
-
-            }
-
-
-            return View(await customers.AsNoTracking().ToListAsync());
+            var hotelContext = _context.Customers.Include(c => c.Customertypes);
+            return View(await hotelContext.ToListAsync());
         }
-            // GET: Customers/Details/5
-            public async Task<IActionResult> Details(long? id)
+
+        // GET: Customers/Details/5
+        public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
             {
@@ -137,7 +52,6 @@ namespace HotelIsaac.Controllers
         // GET: Customers/Create
         public IActionResult Create()
         {
-            ViewData["Customertypesid"] = new SelectList(_context.Customertypes, "Id", "Id");
             return View();
         }
 
@@ -146,18 +60,39 @@ namespace HotelIsaac.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Customertypesid,Firstname,Lastname,Email,Streetadress,City,Country,Ice,Lastupdated")] Customer customer)
+        public async Task<IActionResult> Create([Bind("Firstname,Lastname,Email,Password, Streetadress,City,Country,Ice")] NewCustomerViewModel newCustomer)
         {
             if (ModelState.IsValid)
             {
-                DateTime today = DateTime.Today;
-                customer.Lastupdated = today;
-                _context.Add(customer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var user = new Models.Roles.BaseRole.ApplicationUser();
+                user.Email = newCustomer.Email;
+                user.UserName = newCustomer.Firstname;
+                user.FirstName = newCustomer.Firstname;
+                user.LastName = newCustomer.Lastname;
+                user.EmailConfirmed = true;
+                IdentityResult checkUser = await _userManager.CreateAsync(user, newCustomer.Password);
+                if(checkUser.Succeeded)
+                {
+                    var result = await _userManager.AddToRoleAsync(user, "Customer");
+                    var customer = new Customer()
+                    {
+                        Customertypesid = 1,
+                        Firstname = newCustomer.Firstname,
+                        Lastname = newCustomer.Lastname,
+                        Email = newCustomer.Email,
+                        Streetadress = newCustomer.Streetadress,
+                        City = newCustomer.City,
+                        Country = newCustomer.Country,
+                        Ice = newCustomer.Ice,
+                        Lastupdated = DateTime.Now
+                    };
+                    _context.Customers.Add(customer);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(newCustomer);
             }
-            ViewData["Customertypesid"] = new SelectList(_context.Customertypes, "Id", "Id", customer.Customertypesid);
-            return View(customer);
+            return View(newCustomer);
         }
 
         // GET: Customers/Edit/5

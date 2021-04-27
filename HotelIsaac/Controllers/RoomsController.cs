@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HotelIsaac.Data;
 using HotelIsaac.Models;
 using HotelIsaac.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelIsaac.Controllers
 {
@@ -25,18 +26,22 @@ namespace HotelIsaac.Controllers
         // GET: Rooms
         public async Task<IActionResult> Index()
         {
+
             var hotelContext = _context.Rooms.Include(r => r.Roomtypes);
             return View(await hotelContext.ToListAsync());
         }
 
         // GET: Rooms to clean
+        [Authorize(Roles = "Administrator, Cleaner-Staff, Reception-Staff")]
         public async Task<IActionResult> Cleaning()
         {
-            var roomsToClean = _roomService.GetRoomsToClean();
-            return View(roomsToClean);
+                var roomsToClean = _roomService.GetRoomsToClean();
+                return View(roomsToClean);
         }
         //[HttpPost, ActionName("Clean")]
         //[ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator, Cleaner-Staff, Reception-Staff")]
+        //[Authorize(Roles = "Cleaner-Staff")]
         public async Task<IActionResult> Clean(short? id)
         {
             if (id == null)
