@@ -14,6 +14,8 @@ namespace HotelIsaac.Models
         [Key]
         [Column("ID")]
         public long Id { get; set; }
+
+        [Phone]
         [Column("PHONENUMBER")]
         [Display(Name = "Phone Number")]
         [StringLength(20)]

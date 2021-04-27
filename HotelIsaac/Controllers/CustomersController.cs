@@ -20,14 +20,103 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var hotelContext = _context.Customers.Include(c => c.Customertypes);
-            return View(await hotelContext.ToListAsync());
-        }
+            ViewData["LastNameSortParm"] = sortOrder == "Lastname" ? "lastname_desc" : "Lastname";
+            ViewData["FirstNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "firstname_desc" : "";
+            ViewData["EmailSortParm"] = sortOrder == "Email" ? "email_desc" : "Email";
+            ViewData["AdressSortParm"] = sortOrder == "Adress" ? "adress_desc" : "Adress";
+            ViewData["CitySortParm"] = sortOrder == "City" ? "city_desc" : "City";
+            ViewData["CountrySortParm"] = sortOrder == "Country" ? "country_desc" : "Country";
+            ViewData["ICESortParm"] = sortOrder == "Ice" ? "ice_desc" : "Ice";
+            ViewData["LastUpdatedSortParm"] = sortOrder == "Lastupdated" ? "lastupdated_desc" : "Lastupdated";
+            ViewData["CustomerTypeSortParm"] = sortOrder == "Customertype" ? "customertype_desc" : "Customertype";
 
-        // GET: Customers/Details/5
-        public async Task<IActionResult> Details(long? id)
+            var customers = from c in _context.Customers
+                           .Include(c => c.Bookings)
+                           select c;
+
+            switch (sortOrder)
+            {
+                case "Lastname":
+                    customers = customers.OrderBy(c => c.Lastname);
+                    break;
+
+                case "lastname_desc":
+                    customers = customers.OrderByDescending(c => c.Lastname);
+                    break;
+
+                case "firstname_desc":
+                    customers = customers.OrderByDescending(c => c.Firstname);
+                    break;
+
+                case "Email":
+                    customers = customers.OrderBy(c => c.Email);
+                    break;
+
+                case "email_desc":
+                    customers = customers.OrderByDescending(c => c.Email);
+                    break;
+
+                case "Adress":
+                    customers = customers.OrderBy(c => c.Streetadress);
+                    break;
+
+                case "adress_desc":
+                    customers = customers.OrderByDescending(c => c.Streetadress);
+                    break;
+
+                case "City":
+                    customers = customers.OrderBy(c => c.City);
+                    break;
+
+                case "city_desc":
+                    customers = customers.OrderByDescending(c => c.City);
+                    break;
+
+                case "Country":
+                    customers = customers.OrderBy(c => c.Country);
+                    break;
+
+                case "country_desc":
+                    customers = customers.OrderByDescending(c => c.Country);
+                    break;
+
+                case "Ice":
+                    customers = customers.OrderBy(c => c.Ice);
+                    break;
+
+                case "ice_desc":
+                    customers = customers.OrderByDescending(c => c.Ice);
+                    break;
+
+                case "Lastupdated":
+                    customers = customers.OrderBy(c => c.Lastupdated);
+                    break;
+
+                case "lastupdated_desc":
+                    customers = customers.OrderByDescending(c => c.Lastupdated);
+                    break;
+
+                case "Customertype":
+                    customers = customers.OrderBy(c => c.Customertypes);
+                    break;
+
+                case "customertype_desc":
+                    customers = customers.OrderByDescending(c => c.Customertypes);
+                    break;
+
+                default:
+                    customers = customers.OrderBy(c => c.Firstname);
+                    break;
+
+            }
+
+
+            return View(await customers.AsNoTracking().ToListAsync());
+        }
+            // GET: Customers/Details/5
+            public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
             {
@@ -61,6 +150,8 @@ namespace HotelIsaac.Controllers
         {
             if (ModelState.IsValid)
             {
+                DateTime today = DateTime.Today;
+                customer.Lastupdated = today;
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

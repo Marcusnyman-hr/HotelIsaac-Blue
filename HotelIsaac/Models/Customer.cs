@@ -21,43 +21,53 @@ namespace HotelIsaac.Models
         [Key]
         [Column("ID")]
         public long Id { get; set; }
+
         [Column("CUSTOMERTYPESID")]
         [Display(Name = "Guest level")]
         public short Customertypesid { get; set; }
+
         [Required]
         [Column("FIRSTNAME")]
         [Display(Name = "First Name")]
         [StringLength(30)]
         public string Firstname { get; set; }
+
         [Required]
         [Column("LASTNAME")]
         [Display(Name = "Last Name")]
         [StringLength(30)]
         public string Lastname { get; set; }
+
+        [EmailAddress]
         [Required]
         [Column("EMAIL")]
         [Display(Name = "Email")]
         [StringLength(60)]
         public string Email { get; set; }
+
         [Required]
         [Column("STREETADRESS")]
         [Display(Name = "Street Adress")]
         [StringLength(60)]
         public string Streetadress { get; set; }
+
         [Required]
         [Column("CITY")]
         [Display(Name = "City")]
         [StringLength(30)]
         public string City { get; set; }
+
         [Required]
         [Column("COUNTRY")]
         [Display(Name = "Country")]
         [StringLength(30)]
         public string Country { get; set; }
+
         [Column("ICE")]
         [Display(Name = "Emergency contact")]
         [StringLength(60)]
         public string Ice { get; set; }
+
         [Column("LASTUPDATED", TypeName = "datetime")]
         [Display(Name = "Last updated")]
         public DateTime? Lastupdated { get; set; }
