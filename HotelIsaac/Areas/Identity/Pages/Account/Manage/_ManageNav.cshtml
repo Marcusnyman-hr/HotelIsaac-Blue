@@ -1,14 +1,7 @@
 ﻿@using HotelIsaac.Models.Roles.BaseRole
-
 @inject SignInManager<ApplicationUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
-}
-@model IndexModel
-@if (Model.User.IsInRole("Administrator"))
-{
-    <li class="nav-item"><a asp-controller="UserRoles" asp-action="Index">View Users</a></li>
-    <li class="nav-item"><a asp-controller="RoleManager" asp-action="Index">Manage Roles</a></li>
 }
 <ul class="nav nav-pills flex-column">
     <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
