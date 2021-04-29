@@ -59,6 +59,8 @@ namespace HotelIsaac.Models
         [Column("STAFFID")]
         [Display(Name = "Cashier")]
         public int? Staffid { get; set; }
+        [Display(Name = "Checked in")]
+        public bool? checkedIn { get; set; }
 
         [ForeignKey(nameof(Customersid))]
         [InverseProperty(nameof(Customer.Bookings))]

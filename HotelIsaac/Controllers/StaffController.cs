@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HotelIsaac.Data;
 using HotelIsaac.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelIsaac.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class StaffController : Controller
     {
         private readonly HotelContext _context;

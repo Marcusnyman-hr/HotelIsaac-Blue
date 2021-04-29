@@ -9,6 +9,7 @@ using HotelIsaac.Data;
 using HotelIsaac.Models;
 using Microsoft.AspNetCore.Identity;
 using HotelIsaac.Models.Roles.BaseRole;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelIsaac.Controllers
 {
@@ -24,6 +25,7 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Customers
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         public async Task<IActionResult> Index()
         {
             var hotelContext = _context.Customers.Include(c => c.Customertypes);
@@ -31,6 +33,7 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Customers/Details/5
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -88,7 +91,7 @@ namespace HotelIsaac.Controllers
                     };
                     _context.Customers.Add(customer);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", "Home");
                 }
                 return View(newCustomer);
             }
@@ -96,6 +99,7 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Customers/Edit/5
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -117,6 +121,7 @@ namespace HotelIsaac.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Customertypesid,Firstname,Lastname,Email,Streetadress,City,Country,Ice,Lastupdated")] Customer customer)
         {
             if (id != customer.Id)
@@ -149,6 +154,7 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Customers/Delete/5
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -168,6 +174,7 @@ namespace HotelIsaac.Controllers
         }
 
         // POST: Customers/Delete/5
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)

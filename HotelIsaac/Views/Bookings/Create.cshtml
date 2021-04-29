@@ -1,76 +1,252 @@
-﻿@model HotelIsaac.Models.Booking
+﻿@model HotelIsaac.Models.StaffBookingVM
 
 @{
-    ViewData["Title"] = "Create";
+  ViewData["Title"] = "Book";
+}
+@if (User.Identity.IsAuthenticated)
+{
+  <h1>Book</h1>
+  <h4>Booking</h4>
+  <hr />
+  <div class="row">
+    <div class="col-md-4">
+      <form asp-action="Create" id="bookingForm">
+        @if (@ViewBag.ErrorMsg != null)
+        {
+        <span class="text-danger">@ViewBag.ErrorMsg</span>
+        }
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+          <label asp-for="Firstname" class="control-label"></label>
+          <input asp-for="Firstname" class="form-control" id="Firstname" />
+          <span asp-validation-for="Firstname" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Lastname" class="control-label"></label>
+          <input asp-for="Lastname" class="form-control" id="Lastname" />
+          <span asp-validation-for="Lastname" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Email" class="control-label"></label>
+          <input asp-for="Email" class="form-control" id="Email" />
+          <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Streetadress" class="control-label"></label>
+          <input asp-for="Streetadress" class="form-control" id="Streetadress" />
+          <span asp-validation-for="Streetadress" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="City" class="control-label"></label>
+          <input asp-for="City" class="form-control" id="City" />
+          <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Country" class="control-label"></label>
+          <input asp-for="Country" class="form-control" id="Country" />
+          <span asp-validation-for="Country" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Ice" class="control-label"></label>
+          <input asp-for="Ice" class="form-control" id="Ice" />
+          <span asp-validation-for="Ice" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="RoomTypeId" class="control-label"></label>
+          <select asp-for="RoomTypeId" class="form-control" asp-items="@ViewBag.RoomTypeId" id="roomTypeIdSelect"></select>
+          <span asp-validation-for="RoomTypeId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Qtypersons" class="control-label"></label>
+          <input asp-for="Qtypersons" class="form-control" id="qtyPersons" />
+          <span asp-validation-for="Qtypersons" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label>Duration:</label>
+          <input type="text" name="daterange" value="" class="form-control" />
+          <input asp-for="Startdate" class="form-control" id="startDateInput" type="hidden" />
+          <span asp-validation-for="Startdate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <input asp-for="Enddate" class="form-control" id="endDateInput" type="hidden" />
+          <span asp-validation-for="Enddate" class="text-danger"></span>
+        </div>
+
+        <div class="form-group" id="etaFormGroup" hidden>
+          <input asp-for="Eta" class="form-control" id="etaInput" hidden />
+          <label class="control-label">At what time would you like to check in?</label>
+          <select name="etaSelect" clasS="form-control" id="etaSelect">
+            <option value="09:00">09:00</option>
+            <option value="13:00">13:00</option>
+            <option value="17:00">17:00</option>
+            <option value="20:00">20:00</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label asp-for="Specialneeds" class="control-label"></label>
+          <input asp-for="Specialneeds" class="form-control" />
+          <span asp-validation-for="Specialneeds" class="text-danger"></span>
+        </div>
+        <div class="form-group form-check">
+          <label class="form-check-label">
+            <input class="form-check-input" asp-for="Extrabed" id="extraBedCheckbox" /> @Html.DisplayNameFor(model => model.Extrabed)
+          </label>
+          <div class="form-group">
+            <span class="text-danger" id="frontEndValidationSpan"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label asp-for="StaffId" class="control-label"></label>
+          <select asp-for="StaffId" class="form-control" asp-items="ViewBag.Staffid"></select>
+          <span asp-validation-for="StaffId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <a href="#" class="btn btn-primary" onclick="submitForm()">Book my room</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+}
+else
+{
+  <h2>Please login or register first!</h2>
 }
 
-<h1>Create</h1>
 
-<h4>Booking</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Customersid" class="control-label"></label>
-                <select asp-for="Customersid" class ="form-control" asp-items="ViewBag.Customersid"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Qtypersons" class="control-label"></label>
-                <input asp-for="Qtypersons" class="form-control" min="1" max="5" />
-                <span asp-validation-for="Qtypersons" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Startdate" class="control-label"></label>
-                <input asp-for="Startdate" class="form-control" />
-                <span asp-validation-for="Startdate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Enddate" class="control-label"></label>
-                <input asp-for="Enddate" class="form-control" />
-                <span asp-validation-for="Enddate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Eta" class="control-label"></label>
-                <input asp-for="Eta" class="form-control" />
-                <span asp-validation-for="Eta" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Timearrival" class="control-label"></label>
-                <input asp-for="Timearrival" class="form-control" />
-                <span asp-validation-for="Timearrival" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Timedeparture" class="control-label"></label>
-                <input asp-for="Timedeparture" class="form-control" />
-                <span asp-validation-for="Timedeparture" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Specialneeds" class="control-label"></label>
-                <input asp-for="Specialneeds" class="form-control" />
-                <span asp-validation-for="Specialneeds" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Extrabed" /> @Html.DisplayNameFor(model => model.Extrabed)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="Staffid" class="control-label"></label>
-                <select asp-for="Staffid" class ="form-control" asp-items="ViewBag.Staffid"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+  let fullStartDate;
+  var disabledSingleDates = []
+  window.onload = function () {
+    let disabledSingleDates = updateDisabledDates(1);
+    renderDatePicker(disabledSingleDates);
+
+  }
+
+  $('#etaSelect').change(function () {
+    let splitted = $('#etaInput').val().split('T');
+    splitted[1] = this.value;
+    $('#etaInput').val(splitted[0] + 'T' + splitted[1]);
+  });
+  function renderDatePicker(disabledDatesToShow) {
+    $('input[name="daterange"]').daterangepicker({
+      isInvalidDate: function (date) {
+        var formatted = date.format('YYYY-MM-DD');
+        return disabledDatesToShow.indexOf(formatted) > -1;
+      },
+      opens: 'left',
+      minDate: new Date()
+    }, function (start, end, label) {
+        fullStartDate = start;
+      $('#startDateInput').val(start.format('YYYY-MM-DD'));
+        $('#endDateInput').val(end.format('YYYY-MM-DD'));
+        $('#etaFormGroup').removeAttr('hidden');
+        $('#etaInput').val(start.format('YYYY-MM-DD') + 'T' + '09:00');
+        $('#etaSelect').val('09:00');
+    });
+  }
+
+
+  function updateDisabledDates(roomTypeId) {
+    let dates = [];
+    let disabledDates = []
+    switch(roomTypeId) {
+      case 1:
+        dates = @Json.Serialize(@ViewBag.SingleFullyBookedDates);
+        break;
+      case 2:
+        dates = @Json.Serialize(@ViewBag.DoubleFullyBookedDates);
+        break;
+      case 3:
+        dates = @Json.Serialize(@ViewBag.TripleFullyBookedDates);
+        break;
+      case 4:
+        dates = @Json.Serialize(@ViewBag.QuadFullyBookedDates);
+        break;
+      default:
+        dates = @Json.Serialize(@ViewBag.SingleFullyBookedDates);
+    }
+    for (let i = 0; i < dates.length; i++) {
+      let date = new Date(dates[i]);
+      let formattedDate = date.toISOString().split('T')[0];
+      disabledDates.push(formattedDate);
+    }
+    return disabledDates;
+  }
+  $('#roomTypeIdSelect').change(function () {
+    let disabledDates = updateDisabledDates(parseInt(this.value));
+    $('input[name="daterange"]').daterangepicker('destroy');
+    renderDatePicker(disabledDates);
+
+  });
+  function submitForm() {
+    updateFrontEndValidation('');
+    let startDate = $('#startDateInput').val();
+    let endDate = $('#endDateInput').val();
+    let roomTypeId = +$('#roomTypeIdSelect').val();
+    let qtyPersons = +$('#qtyPersons').val();
+    //qty person validation
+    if (!qtyPersons) {
+      updateFrontEndValidation('Did you enter the right amount of guests?');
+      $('#qtyPersons').val(1);
+      return
+    }
+    //Single room validation
+    if (roomTypeId === 1 && qtyPersons > 2) {
+      updateFrontEndValidation('Maximum 2 persons in a single room (with extrabed)');
+      return
+    }
+    if (roomTypeId === 1 && qtyPersons === 2) {
+      $('#extraBedCheckbox').prop('checked', true);
+
+    }
+
+    //double room validation
+    if (roomTypeId === 2 && qtyPersons > 3) {
+      updateFrontEndValidation('Maximum 3 persons in a double room (with extrabed)');
+      return
+    }
+    if (roomTypeId === 2 && qtyPersons === 3) {
+      $('#extraBedCheckbox').prop('checked', true);
+
+    }
+
+    //family/triple room validation
+    if (roomTypeId === 3 && qtyPersons > 5) {
+      updateFrontEndValidation('Maximum 5 persons in a family room (with extrabed)');
+      return
+    }
+    if (roomTypeId === 3 && qtyPersons === 5) {
+      $('#extraBedCheckbox').prop('checked', true);
+
+    }
+
+    //Suite/Quad room validation
+    if (roomTypeId === 4 && qtyPersons > 6) {
+      updateFrontEndValidation('Maximum 6 persons in a suite (with extrabed)');
+      return
+    }
+    if (roomTypeId === 4 && qtyPersons === 6) {
+      $('#extraBedCheckbox').prop('checked', true);
+
+    }
+
+    //durationvalidation
+    if (startDate.length + endDate.length != 20) {
+      updateFrontEndValidation('Please choose a valid timeperiod for your stay!');
+      return
+    }
+    document.getElementById("bookingForm").submit();
+  }
+  function updateFrontEndValidation(errorMsg) {
+    $('#frontEndValidationSpan').text(errorMsg);
+  }
+
+
+</script>

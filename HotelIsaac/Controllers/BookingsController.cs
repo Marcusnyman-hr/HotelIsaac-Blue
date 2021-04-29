@@ -33,6 +33,7 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Bookings
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         public async Task<IActionResult> Index(string sortOrder)
         {
             ViewData["QtySortParm"] = sortOrder == "Qtypersons" ? "qtypersons_desc" : "Qtypersons";
@@ -44,41 +45,13 @@ namespace HotelIsaac.Controllers
             ViewData["SpecialneedsSortParm"] = sortOrder == "Specialneeds" ? "specialneeds_desc" : "Specialneeds";
             ViewData["ExtrabedSortParm"] = sortOrder == "Extrabed" ? "extrabed_desc" : "Extrabed";
             ViewData["CustomersSortParm"] = sortOrder == "Customers" ? "customers_desc" : "Customers";
-            ViewData["StaffSortParm"] = sortOrder == "Staff" ? "staff_desc" : "Staff";
+            ViewData["CheckInSortParm"] = sortOrder == "CheckedIn" ? "CheckedIn_desc" : "CheckedIn";
+            
 
             var bookings = from s in _context.Bookings
                            .Include(c => c.Customers)
                            .Include(s => s.Bookingsrooms)
                            select s;
-            var singleRooms = _context.Rooms
-                .Include(r=>r.Roomtypes)
-                .Where(r => r.Roomtypes.Qtybeds == 1);
-            var dobuleRooms = _context.Rooms
-                .Include(r => r.Roomtypes)
-                .Where(r => r.Roomtypes.Qtybeds == 2);
-
-            var testBookings = _context.Bookings
-                .Include(b => b.Bookingsrooms)
-                .ThenInclude(br => br.Rooms)
-                .ToList();
-            List<DateTime> dates = new List<DateTime>();
-            foreach(var booking in testBookings)
-            {
-                for (var dt = booking.Startdate; dt <= booking.Enddate; dt = dt.AddDays(1))
-                {
-                    dates.Add(dt);
-                }
-            }
-            var total = dates.GroupBy(_ => _).Where(_ => _.Count() > 1).Sum(_ => _.Count());
-
-            var count = dates.GroupBy(item => item)
-                                 .Where(item => item.Count() > 1)
-                                 .Sum(item => item.Count());
-
-            //foreach(var date in dates)
-            //{
-            //    if()
-            //}
 
 
             switch (sortOrder)
@@ -158,6 +131,12 @@ namespace HotelIsaac.Controllers
                 case "staff_desc":
                     bookings = bookings.OrderByDescending(c => c.Staff);
                     break;
+                case "CheckedIn_desc":
+                    bookings = bookings.OrderByDescending(c => c.checkedIn);
+                    break;
+                case "CheckedIn":
+                    bookings = bookings.OrderBy(c => c.checkedIn);
+                    break;
 
                 default:
                     bookings = bookings.OrderBy(c => c.Startdate);
@@ -171,6 +150,7 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Bookings/Details/5
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -190,7 +170,7 @@ namespace HotelIsaac.Controllers
             return View(booking);
         }
         //Get Bookings/Book
-        //[Authorize(Roles = "Administrator, Cleaner-Staff, Reception-Staff, Customer")]
+        [Authorize(Roles = "Customer")]
         public IActionResult Book()
         {
 
@@ -216,7 +196,7 @@ namespace HotelIsaac.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator, Cleaner-Staff, Reception-Staff, Customer")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Book([Bind("Customersid, RoomTypeId, Eta, Qtypersons,Startdate,Enddate,Specialneeds,Extrabed")] BookingVM booking)
         {
             if (ModelState.IsValid)
@@ -268,6 +248,7 @@ namespace HotelIsaac.Controllers
         {
             return View();
         }
+        [Authorize(Roles = "Customer")]
         public IActionResult CustomersBookings()
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
@@ -285,32 +266,82 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Bookings/Create
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         public IActionResult Create()
         {
-            ViewData["Customersid"] = new SelectList(_context.Customers, "Id", "City");
-            ViewData["Staffid"] = new SelectList(_context.staff, "Id", "Email");
+            ViewData["Staffid"] = new SelectList(_context.staff, "Id", "Firstname");
+            ViewData["RoomTypeId"] = new SelectList(_context.Roomtypes, "Id", "Name");
+            var bookedRooms = _bookingService.GetBookedDates();
+            ViewBag.SingleFullyBookedDates = bookedRooms.Where(x => x.BookedSingleRooms >= _roomService.GetAmountOfRooms(1)).Select(d => d.Date).ToList();
+            ViewBag.DoubleFullyBookedDates = bookedRooms.Where(x => x.BookedDoubleRooms >= _roomService.GetAmountOfRooms(2)).Select(d => d.Date).ToList();
+            ViewBag.TripleFullyBookedDates = bookedRooms.Where(x => x.BookedTripleRooms >= _roomService.GetAmountOfRooms(3)).Select(d => d.Date).ToList();
+            ViewBag.QuadFullyBookedDates = bookedRooms.Where(x => x.BookedQuadRooms >= _roomService.GetAmountOfRooms(4)).Select(d => d.Date).ToList();
             return View();
         }
 
         // POST: Bookings/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrator, Cleaner-Staff, Reception-Staff")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Customersid,Qtypersons,Startdate,Enddate,Eta,Timearrival,Timedeparture,Specialneeds,Extrabed,Staffid")] Booking booking)
+        public async Task<IActionResult> Create([Bind("Firstname, Lastname, Email, Streetadress, City, Country, Ice ,Qtypersons, RoomTypeId, Startdate,Enddate,Eta,Timearrival,Timedeparture,Specialneeds,Extrabed, StaffId")] StaffBookingVM booking)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(booking);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var customerId = _customerService.CheckIfCustomerExists(booking.Email);
+                if (customerId == 0)
+                {
+                    customerId = _customerService.CreateCustomer(1, booking.Firstname, booking.Lastname, booking.Email, booking.Streetadress, booking.City, booking.Country, booking.Ice, DateTime.Now);
+                }
+                try
+                {
+                    var freeRoomId = _roomService.GetIdOfFreeRoomOfType(booking.RoomTypeId, booking.Startdate, booking.Enddate);
+                    if (freeRoomId != 0)
+                    {
+                        var newBooking = new Booking()
+                        {
+                            Customersid = customerId,
+                            Qtypersons = booking.Qtypersons,
+                            Startdate = booking.Startdate,
+                            Enddate = booking.Enddate,
+                            Eta = booking.Eta,
+                            Specialneeds = booking.Specialneeds,
+                            Extrabed = booking.Extrabed,
+                            Staffid = booking.StaffId
+                        };
+                        _context.Bookings.Add(newBooking);
+                        await _context.SaveChangesAsync();
+                        var bookingsroom = new Bookingsroom()
+                        {
+                            Bookingsid = newBooking.Id,
+                            Roomsid = freeRoomId
+                        };
+                        _context.Bookingsrooms.Add(bookingsroom);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch(InvalidOperationException e)
+                {
+                    ViewBag.ErrorMsg = "No room of this type available for the specific dates you've entered";
+                    return View(booking);
+                }
+                
             }
-            ViewData["Customersid"] = new SelectList(_context.Customers, "Id", "City", booking.Customersid);
-            ViewData["Staffid"] = new SelectList(_context.staff, "Id", "Email", booking.Staffid);
+            ViewData["Staffid"] = new SelectList(_context.staff, "Id", "Firstname");
+            ViewData["RoomTypeId"] = new SelectList(_context.Roomtypes, "Id", "Name");
+            var bookedRooms = _bookingService.GetBookedDates();
+            ViewBag.SingleFullyBookedDates = bookedRooms.Where(x => x.BookedSingleRooms >= _roomService.GetAmountOfRooms(1)).Select(d => d.Date).ToList();
+            ViewBag.DoubleFullyBookedDates = bookedRooms.Where(x => x.BookedDoubleRooms >= _roomService.GetAmountOfRooms(2)).Select(d => d.Date).ToList();
+            ViewBag.TripleFullyBookedDates = bookedRooms.Where(x => x.BookedTripleRooms >= _roomService.GetAmountOfRooms(3)).Select(d => d.Date).ToList();
+            ViewBag.QuadFullyBookedDates = bookedRooms.Where(x => x.BookedQuadRooms >= _roomService.GetAmountOfRooms(4)).Select(d => d.Date).ToList();
+
             return View(booking);
         }
 
         // GET: Bookings/Edit/5
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -331,6 +362,7 @@ namespace HotelIsaac.Controllers
         // POST: Bookings/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Customersid,Qtypersons,Startdate,Enddate,Eta,Timearrival,Timedeparture,Specialneeds,Extrabed,Staffid")] Booking booking)
@@ -366,6 +398,7 @@ namespace HotelIsaac.Controllers
         }
 
         // GET: Bookings/Delete/5
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -384,7 +417,7 @@ namespace HotelIsaac.Controllers
 
             return View(booking);
         }
-
+        [Authorize(Roles = "Administrator, Reception-Staff")]
         // POST: Bookings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -393,6 +426,38 @@ namespace HotelIsaac.Controllers
             var booking = await _context.Bookings.FindAsync(id);
             _context.Bookings.Remove(booking);
             await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+      
+        public async Task<IActionResult> CheckIn(long Id)
+        {
+            if (Id != null)
+            {
+                var booking = _context.Bookings.Find(Id);
+                if(booking != null)
+                {
+                    booking.checkedIn = true;
+                    booking.Timearrival = DateTime.Now;
+                }
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> CheckOut(long Id)
+        {
+            if (Id != null)
+            {
+                var booking = _context.Bookings.Find(Id);
+                if (booking != null)
+                {
+                    booking.checkedIn = false;
+                    booking.Timedeparture = DateTime.Now;
+                }
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
             return RedirectToAction(nameof(Index));
         }
 

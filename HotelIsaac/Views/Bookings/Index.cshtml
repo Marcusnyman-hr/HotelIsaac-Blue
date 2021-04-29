@@ -7,7 +7,8 @@
 <h1>Bookings</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary"
+       >Create New booking</a>
 </p>
 <table class="table table-borderless">
     <thead>
@@ -25,10 +26,10 @@
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["EtaSortParm"]" title="Sort eta">ETA</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["TimearrivalSortParm"]" title="Sort time arrival">Arrival Time</a>
+              <a asp-action="Index" asp-route-sortOrder="@ViewData["CheckInSortParm"]" title="Sort by check-in status">Checked in?</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["TimedepartureSortParm"]" title="Sort time departure">Departure Time</a>
+
             </th>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["SpecialneedsSortParm"]" title="Sort requests">Requests</a>
@@ -40,7 +41,6 @@
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["CustomersSortParm"]" title="Sort guests">Guest</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["StaffSortParm"]" title="Sort staff">Staff</a>
             </th>
         </tr>
     </thead>
@@ -48,45 +48,63 @@
 
 
     <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Qtypersons)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Startdate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Enddate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Eta)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Timearrival)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Timedeparture)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Specialneeds)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Extrabed)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Customers.City)
-                </td>
-                <td>
+      @foreach (var item in Model)
+      {
+        <tr>
+          <td>
+            @Html.DisplayFor(modelItem => item.Qtypersons)
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.Startdate)
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.Enddate)
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.Eta)
+          </td>
+          <td>
+            @if (@item.checkedIn == null)
+            {
+              <span>No</span>
+            }
+            @if (@item.checkedIn == true)
+            {
+              <span>Yes</span>
+            }
+            @if (@item.checkedIn == false)
+            {
+              <span>Checked out</span>
+            }
 
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
+          </td>
+          <td>
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.Specialneeds)
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.Extrabed)
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.Customers.Firstname) @Html.DisplayFor(modelItem => item.Customers.Lastname)
+          </td>
+          <td>
+          </td>
+          <td>
+            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+            @if (item.checkedIn == null)
+            {
+              <a asp-action="CheckIn" asp-route-id="@item.Id">Check In</a>
+}
+            @if (item.checkedIn == true)
+            {
+              <a asp-action="CheckOut" asp-route-id="@item.Id">Check out</a>
+            }
+          </td>
+        </tr>
+        
+      }
     </tbody>
 </table>

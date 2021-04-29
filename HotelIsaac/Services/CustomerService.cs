@@ -18,7 +18,7 @@ namespace HotelIsaac.Services
         public long CheckIfCustomerExists(string customerEmail)
         {
             var customer = _db.Customers
-                .Single(c => c.Email == customerEmail);
+                .Where(c => c.Email == customerEmail).FirstOrDefault();
             if (customer != null) return customer.Id;
             return 0;
         }
