@@ -137,6 +137,7 @@ namespace HotelIsaac.Services
         {
             List<Booking> customersBookings = _db.Bookings
                 .Where(b => b.Customersid == customerId)
+                .Include(b=>b.Reviews)
                 .ToList();
             return customersBookings;
         }
