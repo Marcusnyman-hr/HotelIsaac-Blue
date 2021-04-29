@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HotelIsaac.Controllers
 {
+    [Authorize(Roles = "Administrator, Cleaner-Staff, Reception-Staff")]
     public class RoomsController : Controller
     {
         private readonly HotelContext _context;
