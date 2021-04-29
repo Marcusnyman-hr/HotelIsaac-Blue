@@ -4,7 +4,7 @@
     ViewData["Title"] = "Your Bookings";
 }
 
-<h1>Your bookings: </h1>
+<h2>Your reservations: </h2>
 
 <table class="table">
     <thead>
@@ -26,6 +26,8 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Extrabed)
+            </th>
+            <th>
             </th>
         </tr>
     </thead>
@@ -49,6 +51,13 @@
         </td>
         <td>
           @Html.DisplayFor(modelItem => item.Extrabed)
+        </td>
+        <td>
+          @if (item.checkedIn == false && item.Reviews.Count == 0)
+          {
+            <a asp-controller="Reviews" asp-action="Create" asp-route-id="@item.Id" class="btn btn-info">Leave a review</a>
+          }
+
         </td>
 
 

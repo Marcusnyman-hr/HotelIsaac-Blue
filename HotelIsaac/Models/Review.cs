@@ -21,7 +21,8 @@ namespace HotelIsaac.Models
         [Display(Name = "Booking number")]
         public long Bookingsid { get; set; }
         [Column("RATING")]
-        [Display(Name = "Rating")]
+        [Display(Name = "Rating (1-5)")]
+        [Range(1,5)]
         public short Rating { get; set; }
         [Column("CUSTOMERREVIEW", TypeName = "text")]
         [Display(Name = "Review")]
