@@ -63,37 +63,46 @@ namespace HotelIsaac.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Firstname,Lastname,Email,Password, Streetadress,City,Country,Ice")] NewCustomerViewModel newCustomer)
+        public async Task<IActionResult> Create([Bind("Firstname,Lastname,Email,Username,Password, Streetadress,City,Country,Ice")] NewCustomerViewModel newCustomer)
         {
             if (ModelState.IsValid)
             {
                 var user = new Models.Roles.BaseRole.ApplicationUser();
                 user.Email = newCustomer.Email;
-                user.UserName = newCustomer.Firstname;
+                user.UserName = newCustomer.Username;
                 user.FirstName = newCustomer.Firstname;
                 user.LastName = newCustomer.Lastname;
                 user.EmailConfirmed = true;
-                IdentityResult checkUser = await _userManager.CreateAsync(user, newCustomer.Password);
-                if(checkUser.Succeeded)
+                try
                 {
-                    var result = await _userManager.AddToRoleAsync(user, "Customer");
-                    var customer = new Customer()
+                    IdentityResult checkUser = await _userManager.CreateAsync(user, newCustomer.Password);
+                    if (checkUser.Succeeded)
                     {
-                        Customertypesid = 1,
-                        Firstname = newCustomer.Firstname,
-                        Lastname = newCustomer.Lastname,
-                        Email = newCustomer.Email,
-                        Streetadress = newCustomer.Streetadress,
-                        City = newCustomer.City,
-                        Country = newCustomer.Country,
-                        Ice = newCustomer.Ice,
-                        Lastupdated = DateTime.Now
-                    };
-                    _context.Customers.Add(customer);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction("Index", "Home");
+                        var result = await _userManager.AddToRoleAsync(user, "Customer");
+                        var customer = new Customer()
+                        {
+                            Customertypesid = 1,
+                            Firstname = newCustomer.Firstname,
+                            Lastname = newCustomer.Lastname,
+                            Email = newCustomer.Email,
+                            Streetadress = newCustomer.Streetadress,
+                            City = newCustomer.City,
+                            Country = newCustomer.Country,
+                            Ice = newCustomer.Ice,
+                            Lastupdated = DateTime.Now
+                        };
+                        _context.Customers.Add(customer);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("Index", "Home");
+                    }
+                    ViewBag.AccountErrors = checkUser.Errors;
+                    return View(newCustomer);
+                } catch(InvalidOperationException e)
+                {
+                    ViewBag.ErrorMessage = "This email is already registered!";
+                    return View(newCustomer);
                 }
-                return View(newCustomer);
+
             }
             return View(newCustomer);
         }

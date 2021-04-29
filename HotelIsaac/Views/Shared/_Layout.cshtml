@@ -31,6 +31,9 @@
                   <li>
                     <a class="nav-link text-dark" asp-area="" asp-controller="Bookings" asp-action="Book">Book a room</a>
                   </li>
+                }
+                @if (User.IsInRole("Customer"))
+                {
                   <li>
                     <a class="nav-link text-dark" asp-area="" asp-controller="Bookings" asp-action="CustomersBookings">Your reservations</a>
                   </li>
