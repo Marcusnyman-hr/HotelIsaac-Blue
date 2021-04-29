@@ -38,7 +38,7 @@ namespace HotelIsaac
                 {
                     seederService.SeedDataBase();
                 };
-                if (!UserContext.Database.EnsureCreated())
+                if (UserContext.Database.EnsureCreated())
                 {
                     UserContext.Database.Migrate();
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
