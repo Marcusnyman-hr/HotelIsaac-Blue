@@ -69,7 +69,7 @@ namespace HotelIsaac.Controllers
             {
                 var user = new Models.Roles.BaseRole.ApplicationUser();
                 user.Email = newCustomer.Email;
-                user.UserName = newCustomer.Firstname;
+                user.UserName = newCustomer.Email;
                 user.FirstName = newCustomer.Firstname;
                 user.LastName = newCustomer.Lastname;
                 user.EmailConfirmed = true;
@@ -93,6 +93,7 @@ namespace HotelIsaac.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Index", "Home");
                 }
+                ViewBag.AccountErrors = checkUser.Errors;
                 return View(newCustomer);
             }
             return View(newCustomer);

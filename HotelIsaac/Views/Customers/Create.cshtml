@@ -10,6 +10,15 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+      @if(ViewBag.AccountErrors != null)
+      {
+      <ul>
+        @foreach (var error in ViewBag.AccountErrors)
+        {
+          <li class="text-danger">@error.Description</li>
+        }
+       </ul>
+      }
       <form asp-action="Create">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
